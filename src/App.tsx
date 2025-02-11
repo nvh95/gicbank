@@ -76,28 +76,28 @@ function App() {
               <div className="grid grid-cols-2 gap-4">
                 <button
                   onClick={() => handleAction('deposit')}
-                  className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
+                  className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md bg-green-600 hover:bg-green-700"
                 >
                   <ArrowUpCircleIcon className="h-5 w-5 mr-2" />
                   Deposit
                 </button>
                 <button
                   onClick={() => handleAction('withdraw')}
-                  className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                  className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md bg-blue-600 hover:bg-blue-700"
                 >
                   <ArrowDownCircleIcon className="h-5 w-5 mr-2" />
                   Withdraw
                 </button>
                 <button
                   onClick={() => handleAction('statement')}
-                  className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
+                  className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md bg-purple-600 hover:bg-purple-700"
                 >
                   <DocumentTextIcon className="h-5 w-5 mr-2" />
                   Print Statement
                 </button>
                 <button
                   onClick={() => handleAction('quit')}
-                  className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700"
+                  className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md bg-gray-600 hover:bg-gray-700"
                 >
                   <ArrowRightCircleIcon className="h-5 w-5 mr-2" />
                   Quit
@@ -138,7 +138,7 @@ function App() {
               </div>
               <button
                 onClick={() => setCurrentAction(null)}
-                className="mt-4 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+                className="mt-4 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium bg-indigo-600 hover:bg-indigo-700"
               >
                 Back to Menu
               </button>
@@ -169,7 +169,7 @@ function App() {
                 <div className="flex space-x-4">
                   <button
                     type="submit"
-                    className="flex-1 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+                    className="flex-1 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium bg-indigo-600 hover:bg-indigo-700"
                   >
                     Confirm
                   </button>
