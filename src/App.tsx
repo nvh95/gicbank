@@ -1,55 +1,88 @@
-import { useState } from 'react'
-import { format } from 'date-fns'
-import { ArrowUpCircleIcon, ArrowDownCircleIcon, DocumentTextIcon, ArrowRightCircleIcon } from '@heroicons/react/24/outline'
-import type { Transaction, Action } from './types'
-import clsx from 'clsx'
+import { useState, useEffect } from "react";
+import { format } from "date-fns";
+import {
+  ArrowUpCircleIcon,
+  ArrowDownCircleIcon,
+  DocumentTextIcon,
+  ArrowRightCircleIcon,
+  CheckCircleIcon,
+  ExclamationCircleIcon,
+} from "@heroicons/react/24/outline";
+import type { Transaction, Action } from "./types";
+import clsx from "clsx";
+
+type MessageType = {
+  id: string;
+  text: string;
+  type: "success" | "error";
+  timestamp: number;
+};
 
 function App() {
-  const [transactions, setTransactions] = useState<Transaction[]>([])
-  const [currentAction, setCurrentAction] = useState<Action | null>(null)
-  const [amount, setAmount] = useState('')
-  const [balance, setBalance] = useState(0)
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [currentAction, setCurrentAction] = useState<Action | null>(null);
+  const [amount, setAmount] = useState("");
+  const [balance, setBalance] = useState(0);
+  const [messages, setMessages] = useState<MessageType[]>([]);
+
+  const addMessage = (text: string, type: "success" | "error") => {
+    const newMessage: MessageType = {
+      id: Math.random().toString(36).substr(2, 9),
+      text,
+      type,
+      timestamp: Date.now(),
+    };
+    setMessages((prev) => [...prev, newMessage]);
+    setTimeout(() => {
+      setMessages((prev) => prev.filter((msg) => msg.id !== newMessage.id));
+    }, 3000);
+  };
 
   const handleAction = (action: Action) => {
-    if (action === 'quit') {
-      setCurrentAction('quit')
-      return
+    if (action === "quit") {
+      setCurrentAction("quit");
+      return;
     }
-    setCurrentAction(action)
-    setAmount('')
-  }
+    setCurrentAction(action);
+    setAmount("");
+  };
 
   const handleTransaction = (e: React.FormEvent) => {
-    e.preventDefault()
-    const numAmount = parseFloat(amount)
-    
+    e.preventDefault();
+    const numAmount = parseFloat(amount);
+
     if (isNaN(numAmount) || numAmount <= 0) {
-      alert('Please enter a valid positive amount')
-      return
+      addMessage("Please enter a valid positive amount", "error");
+      return;
     }
 
-    if (currentAction === 'withdraw' && numAmount > balance) {
-      alert('Insufficient funds')
-      return
+    if (currentAction === "withdraw" && numAmount > balance) {
+      addMessage("Insufficient funds", "error");
+      return;
     }
 
-    const newBalance = currentAction === 'withdraw' 
-      ? balance - numAmount 
-      : balance + numAmount
+    const newBalance =
+      currentAction === "withdraw" ? balance - numAmount : balance + numAmount;
 
     const newTransaction: Transaction = {
       date: new Date(),
-      amount: currentAction === 'withdraw' ? -numAmount : numAmount,
-      balance: newBalance
-    }
+      amount: currentAction === "withdraw" ? -numAmount : numAmount,
+      balance: newBalance,
+    };
 
-    setTransactions([...transactions, newTransaction])
-    setBalance(newBalance)
-    setCurrentAction(null)
-    setAmount('')
-  }
+    setTransactions([...transactions, newTransaction]);
+    setBalance(newBalance);
+    setCurrentAction(null);
+    setAmount("");
+    addMessage(
+      currentAction === "withdraw"
+        ? `Successfully withdrawn $${numAmount.toFixed(2)}`
+        : `Successfully deposited $${numAmount.toFixed(2)}`,
+      "success"
+    );
+  };
 
-  if (currentAction === 'quit') {
+  if (currentAction === "quit") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
@@ -59,11 +92,31 @@ function App() {
           <p className="text-gray-600">Have a nice day!</p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="fixed top-4 right-4 flex flex-col gap-2">
+        {messages.map((message) => (
+          <div
+            key={message.id}
+            className={clsx(
+              "flex items-center px-4 py-3 rounded border",
+              message.type === "success"
+                ? "bg-green-100 border-green-400 text-green-700"
+                : "bg-red-100 border-red-400 text-red-700"
+            )}
+          >
+            {message.type === "success" ? (
+              <CheckCircleIcon className="h-5 w-5 mr-2" />
+            ) : (
+              <ExclamationCircleIcon className="h-5 w-5 mr-2" />
+            )}
+            <span>{message.text}</span>
+          </div>
+        ))}
+      </div>
       <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="px-6 py-8">
           <h1 className="text-2xl font-bold text-gray-900 text-center mb-8">
@@ -72,31 +125,33 @@ function App() {
 
           {currentAction === null ? (
             <div className="space-y-4">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">What would you like to do?</h2>
+              <h2 className="text-lg font-medium text-gray-900 mb-4">
+                What would you like to do?
+              </h2>
               <div className="grid grid-cols-2 gap-4">
                 <button
-                  onClick={() => handleAction('deposit')}
+                  onClick={() => handleAction("deposit")}
                   className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md bg-green-600 hover:bg-green-700"
                 >
                   <ArrowUpCircleIcon className="h-5 w-5 mr-2" />
                   Deposit
                 </button>
                 <button
-                  onClick={() => handleAction('withdraw')}
+                  onClick={() => handleAction("withdraw")}
                   className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md bg-blue-600 hover:bg-blue-700"
                 >
                   <ArrowDownCircleIcon className="h-5 w-5 mr-2" />
                   Withdraw
                 </button>
                 <button
-                  onClick={() => handleAction('statement')}
+                  onClick={() => handleAction("statement")}
                   className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md bg-purple-600 hover:bg-purple-700"
                 >
                   <DocumentTextIcon className="h-5 w-5 mr-2" />
                   Print Statement
                 </button>
                 <button
-                  onClick={() => handleAction('quit')}
+                  onClick={() => handleAction("quit")}
                   className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md bg-gray-600 hover:bg-gray-700"
                 >
                   <ArrowRightCircleIcon className="h-5 w-5 mr-2" />
@@ -104,28 +159,40 @@ function App() {
                 </button>
               </div>
             </div>
-          ) : currentAction === 'statement' ? (
+          ) : currentAction === "statement" ? (
             <div>
-              <h2 className="text-lg font-medium text-gray-900 mb-4">Account Statement</h2>
+              <h2 className="text-lg font-medium text-gray-900 mb-4">
+                Account Statement
+              </h2>
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead>
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Balance</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Date
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Amount
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Balance
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {transactions.map((transaction, index) => (
                       <tr key={index}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {format(transaction.date, 'dd MMM yyyy hh:mm:ssaa')}
+                          {format(transaction.date, "dd MMM yyyy hh:mm:ssaa")}
                         </td>
-                        <td className={clsx(
-                          "px-6 py-4 whitespace-nowrap text-sm text-right",
-                          transaction.amount > 0 ? "text-green-600" : "text-red-600"
-                        )}>
+                        <td
+                          className={clsx(
+                            "px-6 py-4 whitespace-nowrap text-sm text-right",
+                            transaction.amount > 0
+                              ? "text-green-600"
+                              : "text-red-600"
+                          )}
+                        >
                           ${Math.abs(transaction.amount).toFixed(2)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
@@ -146,7 +213,10 @@ function App() {
           ) : (
             <form onSubmit={handleTransaction}>
               <div className="space-y-4">
-                <label htmlFor="amount" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="amount"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Please enter the amount to {currentAction}:
                 </label>
                 <div className="mt-1 relative rounded-md shadow-sm">
@@ -187,12 +257,14 @@ function App() {
 
           <div className="mt-8 pt-8 border-t border-gray-200">
             <p className="text-sm text-gray-600">Current Balance</p>
-            <p className="text-2xl font-semibold text-gray-900">${balance.toFixed(2)}</p>
+            <p className="text-2xl font-semibold text-gray-900">
+              ${balance.toFixed(2)}
+            </p>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
