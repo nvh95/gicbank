@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { format } from "date-fns";
 import {
   ArrowUpCircleIcon,
@@ -36,11 +36,18 @@ function App() {
   });
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [successModal, setSuccessModal] = useState<SuccessModalType>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     localStorage.setItem("balance", balance.toString());
     localStorage.setItem("transactions", JSON.stringify(transactions));
   }, [balance, transactions]);
+
+  useEffect(() => {
+    if (successModal) {
+      modalRef.current?.focus();
+    }
+  }, [successModal]);
 
   const addMessage = (text: string, type: "success" | "error") => {
     const newMessage: MessageType = {
@@ -139,7 +146,11 @@ function App() {
             className="fixed inset-0 backdrop-blur-xs bg-white/10"
             onClick={() => setSuccessModal(null)}
           />
-          <div className="relative bg-white/90 backdrop-blur-xl rounded-lg shadow-xl max-w-md w-full p-6 border border-gray-900">
+          <div 
+            ref={modalRef}
+            tabIndex={-1}
+            className="relative bg-white/90 backdrop-blur-xl rounded-lg shadow-xl max-w-md w-full p-6 border border-gray-900"
+          >
             <div className="text-center mb-6 mt-2">
               <p className="text-xl text-gray-900 mb-4">
                 Thank you. ${successModal.amount.toFixed(2)} has been{" "}
