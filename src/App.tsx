@@ -5,8 +5,9 @@ import {
   ArrowDownCircleIcon,
   DocumentTextIcon,
   ArrowRightCircleIcon,
-  CheckCircleIcon,
   ExclamationCircleIcon,
+  XMarkIcon,
+  HomeIcon,
 } from "@heroicons/react/24/outline";
 import type { Transaction, Action } from "./types";
 import clsx from "clsx";
@@ -18,12 +19,18 @@ type MessageType = {
   timestamp: number;
 };
 
+type SuccessModalType = {
+  action: "deposit" | "withdraw";
+  amount: number;
+} | null;
+
 function App() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [currentAction, setCurrentAction] = useState<Action | null>(null);
   const [amount, setAmount] = useState("");
   const [balance, setBalance] = useState(0);
   const [messages, setMessages] = useState<MessageType[]>([]);
+  const [successModal, setSuccessModal] = useState<SuccessModalType>(null);
 
   const addMessage = (text: string, type: "success" | "error") => {
     const newMessage: MessageType = {
@@ -41,10 +48,12 @@ function App() {
   const handleAction = (action: Action) => {
     if (action === "quit") {
       setCurrentAction("quit");
+      setSuccessModal(null);
       return;
     }
     setCurrentAction(action);
     setAmount("");
+    setSuccessModal(null);
   };
 
   const handleTransaction = (e: React.FormEvent) => {
@@ -72,14 +81,12 @@ function App() {
 
     setTransactions([...transactions, newTransaction]);
     setBalance(newBalance);
-    setCurrentAction(null);
     setAmount("");
-    addMessage(
-      currentAction === "withdraw"
-        ? `Successfully withdrawn $${numAmount.toFixed(2)}`
-        : `Successfully deposited $${numAmount.toFixed(2)}`,
-      "success"
-    );
+    setSuccessModal({
+      action: currentAction as "deposit" | "withdraw",
+      amount: numAmount,
+    });
+    setCurrentAction(null);
   };
 
   if (currentAction === "quit") {
@@ -97,26 +104,89 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      {/* Error messages */}
       <div className="fixed top-4 right-4 flex flex-col gap-2">
         {messages.map((message) => (
           <div
             key={message.id}
             className={clsx(
               "flex items-center px-4 py-3 rounded border",
-              message.type === "success"
-                ? "bg-green-100 border-green-400 text-green-700"
-                : "bg-red-100 border-red-400 text-red-700"
+              "bg-red-100 border-red-400 text-red-700"
             )}
           >
-            {message.type === "success" ? (
-              <CheckCircleIcon className="h-5 w-5 mr-2" />
-            ) : (
-              <ExclamationCircleIcon className="h-5 w-5 mr-2" />
-            )}
+            <ExclamationCircleIcon className="h-5 w-5 mr-2" />
             <span>{message.text}</span>
           </div>
         ))}
       </div>
+
+      {/* Success Modal */}
+      {successModal && (
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <div
+            className="fixed inset-0 backdrop-blur-xs bg-white/10"
+            onClick={() => setSuccessModal(null)}
+          />
+          <div className="relative bg-white/90 backdrop-blur-xl rounded-lg shadow-xl max-w-md w-full p-6 border border-gray-900">
+            <button
+              onClick={() => setSuccessModal(null)}
+              className="absolute top-1 right-1 p-1 rounded-full bg-gray-100 text-gray-400 hover:text-gray-500 focus:outline-none"
+            >
+              <XMarkIcon className="h-5 w-5" />
+            </button>
+            <div className="text-center mb-6 mt-2">
+              <p className="text-xl text-gray-900 mb-4">
+                Thank you. ${successModal.amount.toFixed(2)} has been{" "}
+                {successModal.action === "withdraw" ? "withdrawn" : "deposited"}
+                .
+              </p>
+              <p className="text-gray-600">
+                Is there anything else you'd like to do?
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <button
+                onClick={() => handleAction("deposit")}
+                className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md bg-green-600 hover:bg-green-700"
+              >
+                <ArrowUpCircleIcon className="h-5 w-5 mr-2" />
+                Deposit
+              </button>
+              <button
+                onClick={() => handleAction("withdraw")}
+                className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md bg-blue-600 hover:bg-blue-700"
+              >
+                <ArrowDownCircleIcon className="h-5 w-5 mr-2" />
+                Withdraw
+              </button>
+              <button
+                onClick={() => handleAction("statement")}
+                className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md bg-purple-600 hover:bg-purple-700"
+              >
+                <DocumentTextIcon className="h-5 w-5 mr-2" />
+                Print Statement
+              </button>
+              <button
+                onClick={() => handleAction("quit")}
+                className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md bg-gray-600 hover:bg-gray-700"
+              >
+                <ArrowRightCircleIcon className="h-5 w-5 mr-2" />
+                Quit
+              </button>
+            </div>
+            <div className="mt-4 text-center">
+              <button
+                onClick={() => setSuccessModal(null)}
+                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
+              >
+                <HomeIcon className="h-5 w-5 mr-2" />
+                Return to home page
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="px-6 py-8">
           <h1 className="text-2xl font-bold text-gray-900 text-center mb-8">
