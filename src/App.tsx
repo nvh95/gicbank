@@ -306,6 +306,7 @@ function App() {
                     id="amount"
                     step="0.01"
                     min="0"
+                    autoFocus
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
