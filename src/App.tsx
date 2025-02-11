@@ -6,7 +6,6 @@ import {
   DocumentTextIcon,
   ArrowRightCircleIcon,
   ExclamationCircleIcon,
-  XMarkIcon,
   HomeIcon,
 } from "@heroicons/react/24/outline";
 import type { Transaction, Action } from "./types";
@@ -25,12 +24,23 @@ type SuccessModalType = {
 } | null;
 
 function App() {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>(() => {
+    const saved = localStorage.getItem("transactions");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [currentAction, setCurrentAction] = useState<Action | null>(null);
   const [amount, setAmount] = useState("");
-  const [balance, setBalance] = useState(0);
+  const [balance, setBalance] = useState(() => {
+    const saved = localStorage.getItem("balance");
+    return saved ? parseFloat(saved) : 0;
+  });
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [successModal, setSuccessModal] = useState<SuccessModalType>(null);
+
+  useEffect(() => {
+    localStorage.setItem("balance", balance.toString());
+    localStorage.setItem("transactions", JSON.stringify(transactions));
+  }, [balance, transactions]);
 
   const addMessage = (text: string, type: "success" | "error") => {
     const newMessage: MessageType = {
@@ -47,6 +57,8 @@ function App() {
 
   const handleAction = (action: Action) => {
     if (action === "quit") {
+      localStorage.removeItem("balance");
+      localStorage.removeItem("transactions");
       setCurrentAction("quit");
       setSuccessModal(null);
       return;
@@ -128,12 +140,6 @@ function App() {
             onClick={() => setSuccessModal(null)}
           />
           <div className="relative bg-white/90 backdrop-blur-xl rounded-lg shadow-xl max-w-md w-full p-6 border border-gray-900">
-            <button
-              onClick={() => setSuccessModal(null)}
-              className="absolute top-1 right-1 p-1 rounded-full bg-gray-100 text-gray-400 hover:text-gray-500 focus:outline-none"
-            >
-              <XMarkIcon className="h-5 w-5" />
-            </button>
             <div className="text-center mb-6 mt-2">
               <p className="text-xl text-gray-900 mb-4">
                 Thank you. ${successModal.amount.toFixed(2)} has been{" "}
@@ -187,7 +193,7 @@ function App() {
         </div>
       )}
 
-      <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+      <div className="max-w-xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="px-6 py-8">
           <h1 className="text-2xl font-bold text-gray-900 text-center mb-8">
             Welcome to AwesomeGIC Bank!
@@ -263,7 +269,8 @@ function App() {
                               : "text-red-600"
                           )}
                         >
-                          ${Math.abs(transaction.amount).toFixed(2)}
+                          {transaction.amount < 0 ? "-" : ""}$
+                          {Math.abs(transaction.amount).toFixed(2)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
                           ${transaction.balance.toFixed(2)}
