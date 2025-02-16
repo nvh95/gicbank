@@ -15,45 +15,47 @@ export default function Statement({ transactions, onBack }: StatementProps) {
         Account Statement
       </h2>
       {transactions.length > 0 ? (
-        <div className="shadow overflow-hidden border border-gray-200 sm:rounded-lg">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead>
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Date
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Amount
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Balance
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {transactions.map((transaction, index) => (
-                <tr key={index}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {format(transaction.date, "dd MMM yyyy hh:mm:ssaa")}
-                  </td>
-                  <td
-                    className={clsx(
-                      "px-6 py-4 whitespace-nowrap text-sm text-right",
-                      transaction.amount > 0
-                        ? "text-green-600"
-                        : "text-red-600"
-                    )}
-                  >
-                    {transaction.amount < 0 ? "-" : ""}$
-                    {Math.abs(transaction.amount).toFixed(2)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
-                    ${transaction.balance.toFixed(2)}
-                  </td>
+        <div className="overflow-hidden rounded-lg border border-gray-200 max-w-[85vw]">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead>
+                <tr>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Date
+                  </th>
+                  <th className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Amount
+                  </th>
+                  <th className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Balance
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {transactions.map((transaction, index) => (
+                  <tr key={index}>
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {format(transaction.date, "dd MMM yyyy hh:mm:ssaa")}
+                    </td>
+                    <td
+                      className={clsx(
+                        "px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-right",
+                        transaction.amount > 0
+                          ? "text-green-600"
+                          : "text-red-600"
+                      )}
+                    >
+                      {transaction.amount < 0 ? "-" : ""}$
+                      {Math.abs(transaction.amount).toFixed(2)}
+                    </td>
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
+                      ${transaction.balance.toFixed(2)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       ) : (
         <div className="text-center py-12 bg-gray-50 rounded-lg border border-gray-200">
