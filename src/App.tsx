@@ -63,10 +63,6 @@ function App() {
   function handleTransaction(e: React.FormEvent) {
     e.preventDefault();
     const numAmount = parseFloat(amount);
-    if (isNaN(numAmount) || numAmount <= 0) {
-      addMessage("Please enter a valid positive amount");
-      return;
-    }
 
     if (currentAction === "withdraw" && numAmount > balance) {
       addMessage("Insufficient balance");

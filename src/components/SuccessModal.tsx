@@ -54,6 +54,7 @@ export default function SuccessModal({
       className="fixed inset-0 flex items-center justify-center p-4"
     >
       <div
+        data-testid="modal-backdrop"
         className="fixed inset-0 backdrop-blur-xs bg-white/10"
         onClick={() => setSuccessModal(null)}
       />
