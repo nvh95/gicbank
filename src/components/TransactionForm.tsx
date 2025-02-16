@@ -14,7 +14,7 @@ export default function TransactionForm({
   onCancel,
 }: TransactionFormProps) {
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit} aria-label={`${action} form`}>
       <div className="space-y-4">
         <label
           htmlFor="amount"
@@ -35,9 +35,10 @@ export default function TransactionForm({
             autoFocus
             value={amount}
             onChange={(e) => onAmountChange(e.target.value)}
-            className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
+            className="w-full rounded-lg border border-gray-300 py-2 pl-6 pr-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="0.00"
             required
+            aria-label={`Enter amount to ${action}`}
           />
         </div>
         <div className="flex space-x-4">

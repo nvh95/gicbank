@@ -96,11 +96,11 @@ function App() {
 
   if (currentAction === "quit") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
         <div className="text-center">
-          <h1 className="text-2xl font-semibold text-gray-900 mb-4">
+          <p className="text-3xl font-semibold text-gray-900 mb-4">
             Thank you for banking with AwesomeGIC Bank.
-          </h1>
+          </p>
           <p className="text-gray-600 mb-8">Have a nice day!</p>
           <button
             onClick={handleLogIn}
@@ -127,34 +127,36 @@ function App() {
         />
       )}
 
-      <div className="max-w-xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
-        <div className="px-6 py-8">
-          <h1 className="text-2xl font-bold text-gray-900 text-center mb-8">
-            Welcome to AwesomeGIC Bank!
-          </h1>
+      <main role="main" aria-label="Banking Application">
+        <div className="max-w-xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className="px-6 py-8">
+            <p className="text-5xl font-bold text-gray-900 text-center mb-8">
+              Welcome to AwesomeGIC Bank!
+            </p>
 
-          {currentAction === null && <Menu onAction={handleAction} />}
+            {currentAction === null && <Menu onAction={handleAction} />}
 
-          {currentAction === "statement" && (
-            <Statement
-              transactions={transactions}
-              onBack={() => setCurrentAction(null)}
-            />
-          )}
+            {currentAction === "statement" && (
+              <Statement
+                transactions={transactions}
+                onBack={() => setCurrentAction(null)}
+              />
+            )}
 
-          {(currentAction === "deposit" || currentAction === "withdraw") && (
-            <TransactionForm
-              action={currentAction}
-              amount={amount}
-              onAmountChange={setAmount}
-              onSubmit={handleTransaction}
-              onCancel={() => setCurrentAction(null)}
-            />
-          )}
+            {(currentAction === "deposit" || currentAction === "withdraw") && (
+              <TransactionForm
+                action={currentAction}
+                amount={amount}
+                onAmountChange={setAmount}
+                onSubmit={handleTransaction}
+                onCancel={() => setCurrentAction(null)}
+              />
+            )}
 
-          <Balance balance={balance} />
+            <Balance balance={balance} />
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

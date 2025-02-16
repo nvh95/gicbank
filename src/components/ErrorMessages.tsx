@@ -12,7 +12,11 @@ type ErrorMessagesProps = {
 
 export default function ErrorMessages({ messages }: ErrorMessagesProps) {
   return (
-    <div className="fixed top-4 right-4 flex flex-col gap-2">
+    <div
+      role="alert"
+      aria-live="assertive"
+      className="fixed top-4 right-4 flex flex-col gap-2"
+    >
       {messages.map((message) => (
         <div
           key={message.id}
@@ -21,7 +25,7 @@ export default function ErrorMessages({ messages }: ErrorMessagesProps) {
             "bg-red-100 border-red-400 text-red-700"
           )}
         >
-          <ExclamationCircleIcon className="h-5 w-5 mr-2" />
+          <ExclamationCircleIcon className="h-5 w-5 mr-2" aria-hidden="true" />
           <span>{message.text}</span>
         </div>
       ))}

@@ -75,28 +75,28 @@ export default function SuccessModal({
         <div className="grid grid-cols-2 gap-4">
           <button
             onClick={handleDeposit}
-            className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md bg-green-600 hover:bg-green-700"
+            className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md"
           >
             <ArrowUpCircleIcon className="h-5 w-5 mr-2" />
             Deposit
           </button>
           <button
             onClick={handleWithdraw}
-            className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md bg-blue-600 hover:bg-blue-700"
+            className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md"
           >
             <ArrowDownCircleIcon className="h-5 w-5 mr-2" />
             Withdraw
           </button>
           <button
             onClick={handleStatement}
-            className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md bg-purple-600 hover:bg-purple-700"
+            className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md"
           >
             <DocumentTextIcon className="h-5 w-5 mr-2" />
             Print Statement
           </button>
           <button
             onClick={handleQuit}
-            className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md bg-gray-600 hover:bg-gray-700"
+            className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md"
           >
             <ArrowRightCircleIcon className="h-5 w-5 mr-2" />
             Quit
