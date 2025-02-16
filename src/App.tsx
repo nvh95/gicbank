@@ -137,14 +137,16 @@ function App() {
             Welcome to AwesomeGIC Bank!
           </h1>
 
-          {currentAction === null ? (
-            <Menu onAction={handleAction} />
-          ) : currentAction === "statement" ? (
+          {currentAction === null && <Menu onAction={handleAction} />}
+
+          {currentAction === "statement" && (
             <Statement
               transactions={transactions}
               onBack={() => setCurrentAction(null)}
             />
-          ) : (
+          )}
+
+          {(currentAction === "deposit" || currentAction === "withdraw") && (
             <TransactionForm
               action={currentAction}
               amount={amount}
